@@ -1,0 +1,62 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "EIDE.ARM.GCC.InstallDirectory": "C:/licheng/arm-gcc/15.2.rel1",
+        "EIDE.ARM.GCC.Prefix": "arm-none-eabi-",
+        "EIDE.JLink.InstallDirectory": "C:/Users/ChengLi/SEGGER/JLink_V986",
+        "cortex-debug.armToolchainPath": "C:/licheng/arm-gcc/15.2.rel1/bin",
+        "cortex-debug.JLinkGDBServerPath": "C:/Users/ChengLi/SEGGER/JLink_V986/JLinkGDBServerCL.exe",
+        "files.associations": {
+            ".eideignore": "ignore",
+            "*.a51": "a51",
+            "*.h": "c",
+            "*.c": "c",
+            "*.hxx": "cpp",
+            "*.hpp": "cpp",
+            "*.c++": "cpp",
+            "*.cpp": "cpp",
+            "*.cxx": "cpp",
+            "*.cc": "cpp"
+        },
+        "files.autoGuessEncoding": true,
+        "C_Cpp.default.configurationProvider": "cl.eide",
+        "C_Cpp.default.compilerPath": "${config:EIDE.ARM.GCC.InstallDirectory}/bin/arm-none-eabi-gcc.exe",
+        "C_Cpp.default.compilerArgs": ["-mcpu=cortex-m3", "-mthumb"],
+        "C_Cpp.default.compileCommands": ["${workspaceFolder}/build/Debug/compile_commands.json"],
+        "C_Cpp.default.intelliSenseMode": "windows-gcc-arm",
+        "C_Cpp.default.cStandard": "c11",
+        "C_Cpp.default.cppStandard": "c++11",
+        "C_Cpp.default.defines": ["USE_STDPERIPH_DRIVER", "STM32F10X_MD", "HSE_VALUE=8000000"],
+        "C_Cpp.default.includePath": [
+            "${workspaceFolder}/src",
+            "${workspaceFolder}/lib/cmsis",
+            "${workspaceFolder}/hal/STM32F10x_StdPeriph_Driver",
+            "${workspaceFolder}/hal/STM32F10x_StdPeriph_Driver/inc"
+        ],
+        "[yaml]": {
+            "editor.insertSpaces": true,
+            "editor.tabSize": 4,
+            "editor.autoIndent": "advanced"
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "cl.eide",
+            "keroc.hex-fmt",
+            "xiaoyongdong.srecord",
+            "hars.cppsnippets",
+            "zixuanwang.linkerscript",
+            "redhat.vscode-yaml",
+            "IBM.output-colorizer",
+            "cschlosser.doxdocgen",
+            "ms-vscode.vscode-serial-monitor",
+            "alefragnani.project-manager",
+            "dan-c-underwood.arm",
+            "marus25.cortex-debug"
+        ]
+    }
+}

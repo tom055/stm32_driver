@@ -1,0 +1,30 @@
+{
+    "version": 1,
+    "author": "ChengLi",
+    "editor": "wokwi",
+    "parts": [
+        {
+            "type": "board-stm32-bluepill",
+            "id": "stm32",
+            "top": 0,
+            "left": 0,
+            "attrs": {}
+        },
+        {
+            "type": "wokwi-lcd1602",
+            "id": "lcd1",
+            "top": 0,
+            "left": 200,
+            "attrs": {
+                "pins": "i2c",
+                "i2cAddress": "0x27"
+            }
+        }
+    ],
+    "connections": [
+        [ "stm32:B6", "lcd1:SCL", "blue", [] ],
+        [ "stm32:B7", "lcd1:SDA", "green", [] ],
+        [ "stm32:5V.1", "lcd1:VCC", "red", [] ],
+        [ "stm32:GND.1", "lcd1:GND", "black", [] ]
+    ]
+}

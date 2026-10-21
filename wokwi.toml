@@ -1,0 +1,5 @@
+[wokwi]
+version = 1
+firmware = 'build/Debug/stm32f1xx_gcc.hex'
+elf = 'build/Debug/stm32f1xx_gcc.elf'
+gdbServerPort = 3333
