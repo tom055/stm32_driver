@@ -23,7 +23,7 @@
 
 ## Wokwi 仿真
 
-项目根目录已配置 `wokwi.toml` 和 `diagram.json`。虚拟电路使用 STM32 Blue Pill 和 I²C LCD1602，LCD 的 7 位地址为 `0x27`。
+项目根目录已配置 `wokwi.toml` 和 `diagram.json`。虚拟电路使用 STM32 Blue Pill、I²C LCD1602 和 Wokwi 原生 BMP180，无需自定义芯片模型。LCD 的 7 位地址为 `0x27`，BMP180 为 `0x77`。
 
 | STM32 Blue Pill | LCD1602 |
 | --- | --- |
@@ -32,11 +32,19 @@
 | 5V | VCC |
 | GND | GND |
 
+BMP180 的 SCL/SDA 同样接 PB6/PB7，VCC 接 Blue Pill 的 3.3V，GND 接地。两台 I²C 设备并联到同一总线，通过不同地址选择。
+
 1. 先在 EIDE 中构建，生成 `build/Debug/stm32f1xx_gcc.hex` 和 `.elf`。
-2. 执行 `Wokwi: Start Simulator`，当前示例在 LCD 第二行第一列开始显示 `World`。
+2. 执行 `Wokwi: Start Simulator`。LCD 第一行显示 `Temp:24.0 C`，第二行显示约 `Pres:1013.25 hPa`，约每秒更新。仿真测量及整数补偿可能带来末位差异。
 3. 如需断点调试，先执行 `Wokwi: Start Simulator and Wait for Debugger`，再选择 `Wokwi GDB` 并按 F5。
 
 `jlink` 配置用于真机，`Wokwi GDB` 用于仿真。Wokwi 授权需通过插件提供的许可证流程完成。
+
+运行中点击 BMP180，可以拖动温度、气压滑块，观察 LCD 更新。`diagram.json` 中 BMP180 的 `pressure` 属性单位是 Pa，例如 `101325`，显示时除以 100 转为 hPa。器件和控制说明见 [Wokwi BMP180 文档](https://docs.wokwi.com/parts/board-bmp180)。
+
+`src/bsp/bmp180.c/.h` 是本示例使用的驱动：初始化读取芯片 ID 和出厂系数；每次采样先发送温度转换命令 `0x2E`，等待 5ms，再发送气压转换命令 `0x34`（OSS=0），等待 5ms 后读取并补偿。`bmp180_read()` 输出 0.1 摄氏度和 Pa。补偿流程参考 [Bosch BMP180 数据手册](https://www.electronicoscaldas.com/datasheet/BMP180_Bosch.pdf) 第 15 页。原有 `bmp280.c/.h` 保留，当前主程序不调用。
+
+以上接线用于 Wokwi。实际共用总线时，需检查 LCD 背包的上拉电压；若上拉到 5V，应在 LCD 支路使用 I²C 双向电平转换，BMP180 所在总线保持 3.3V。
 
 ## LCD 驱动
 
@@ -55,7 +63,7 @@ LCD 指令参考 [HD44780U 数据手册](https://cdn-shop.adafruit.com/datasheet
 ## 板级约定
 
 - 时钟按外部 **8MHz 晶振**配置，PLL 倍频后系统时钟为 72MHz。
-- 当前示例使用 **I2C1：PB6/PB7** 驱动 LCD1602。
+- 当前示例使用 **I2C1：PB6/PB7** 驱动 LCD1602 和 BMP180。
 - 已加入该型号适用的标准库驱动；DAC、CEC、FSMC、SDIO 的源文件保留在磁盘，但排除编译。
 - 当前未实现串口标准输入输出重定向，`printf` 不会自动输出到串口。`nosys.specs` 在新工具链中可能产生未实现系统调用的链接警告。
 
