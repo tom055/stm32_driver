@@ -50,6 +50,12 @@
         [ "stm32:A7", "rfid1:MOSI", "purple", [] ],
         [ "stm32:3V3.1", "rfid1:3.3V", "red", [] ],
         [ "stm32:3V3.1", "rfid1:RST", "red", [] ],
-        [ "stm32:GND.1", "rfid1:GND", "black", [] ]
-    ]
+        [ "stm32:GND.1", "rfid1:GND", "black", [] ],
+        [ "stm32:A2", "$serialMonitor:RX", "", [] ],
+        [ "stm32:A3", "$serialMonitor:TX", "", [] ]
+    ],
+    "serialMonitor": {
+        "display": "always",
+        "newline": "crlf"
+    }
 }

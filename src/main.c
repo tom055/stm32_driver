@@ -4,6 +4,7 @@
 #include "bsp/lcd.h"
 #include "bsp/bmp180.h"
 #include "bsp/mfrc522.h"
+#include "bsp/usart2.h"
 
 /* lcd_init() 已启用 DWT；按 CPU 周期计数，避免空循环随优化变化。 */
 static void delay_ms(uint32_t milliseconds)
@@ -101,7 +102,28 @@ void main_init_bmp(){
         delay_ms(1000U);
     }
 }
+
+
+void main_init_usart2(void)
+{
+    char text[32];
+    lcd_init();
+    usart2_init();
+    display_line(0, "USART2 RX");
+    display_line(1, "Waiting...");
+    while (1)
+    {
+        char *line = get_received_line();
+        if (line[0] != '\0')
+        {
+            snprintf(text, sizeof(text), "RX: %s", line);
+            display_line(1, text);
+        }
+        delay_ms(100U);
+    }
+}
+
 int main(void)
 {
-    main_init_mfrc522();
+    main_init_usart2();
 }
