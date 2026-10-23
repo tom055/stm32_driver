@@ -26,6 +26,13 @@
             "top": 200,
             "left": 250,
             "attrs": {"temperature": "24", "pressure": "101325"}
+        },
+        {
+            "type": "board-mfrc522",
+            "id": "rfid1",
+            "top": 200,
+            "left": 450,
+            "attrs": {}
         }
     ],
     "connections": [
@@ -36,6 +43,13 @@
         [ "stm32:B6", "bmp1:SCL", "blue", [] ],
         [ "stm32:B7", "bmp1:SDA", "green", [] ],
         [ "stm32:3V3.1", "bmp1:VCC", "red", [] ],
-        [ "stm32:GND.1", "bmp1:GND", "black", [] ]
+        [ "stm32:GND.1", "bmp1:GND", "black", [] ],
+        [ "stm32:A4", "rfid1:SDA", "orange", [] ],
+        [ "stm32:A5", "rfid1:SCK", "blue", [] ],
+        [ "stm32:A6", "rfid1:MISO", "green", [] ],
+        [ "stm32:A7", "rfid1:MOSI", "purple", [] ],
+        [ "stm32:3V3.1", "rfid1:3.3V", "red", [] ],
+        [ "stm32:3V3.1", "rfid1:RST", "red", [] ],
+        [ "stm32:GND.1", "rfid1:GND", "black", [] ]
     ]
 }

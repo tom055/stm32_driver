@@ -3,6 +3,7 @@
 #include "stm32f10x.h"
 #include "bsp/lcd.h"
 #include "bsp/bmp180.h"
+#include "bsp/mfrc522.h"
 
 /* lcd_init() 已启用 DWT；按 CPU 周期计数，避免空循环随优化变化。 */
 static void delay_ms(uint32_t milliseconds)
@@ -25,9 +26,47 @@ static void display_line(uint8_t row, const char *text)
     line[16] = '\0';
     lcd_send(row, 0, line);
 }
-
-int main(void)
+static void main_init_mfrc522(void)
 {
+    const uint8_t tx_data[] = {'A', '1', 'b'};
+    uint8_t rx_data[sizeof(tx_data)];
+    char rx_chars[sizeof(tx_data)];
+    char text[32];
+
+    lcd_init();
+    mfrc522_init();
+    display_line(0, "MFRC522 FIFO");
+    display_line(1, "Starting...");
+    delay_ms(50U);
+
+    while (1)
+    {
+        /* 仅验证芯片内部 FIFO，不向 RFID 卡片写入数据。
+         * 每次写入和读出相同数量的字节，正常情况下 FIFO 会重新变空。 */
+        memset(rx_data, 0, sizeof(rx_data));
+        mfrc522_write(tx_data, sizeof(tx_data));
+        mfrc522_read(rx_data, sizeof(rx_data));
+        int matched = memcmp(tx_data, rx_data, sizeof(tx_data)) == 0;
+
+        /* 异常接收值用 '?' 显示，避免控制字符截断 LCD 上的状态文字。 */
+        for (size_t i = 0; i < sizeof(rx_data); i++)
+        {
+            rx_chars[i] = (rx_data[i] >= 0x20U && rx_data[i] <= 0x7EU) ? (char)rx_data[i] : '?';
+        }
+
+        snprintf(text, sizeof(text), "TX:%c %c %c",
+                 (int)tx_data[0], (int)tx_data[1], (int)tx_data[2]);
+        display_line(0, text);
+        snprintf(text, sizeof(text), "RX:%c %c %c %s",
+                 (int)rx_chars[0], (int)rx_chars[1], (int)rx_chars[2],
+                 matched ? "OK" : "FAIL");
+        display_line(1, text);
+
+        delay_ms(1000U);
+    }
+}
+
+void main_init_bmp(){
     char text[32];
     int32_t temperature;
     uint32_t pressure;
@@ -61,4 +100,8 @@ int main(void)
         }
         delay_ms(1000U);
     }
+}
+int main(void)
+{
+    main_init_mfrc522();
 }
