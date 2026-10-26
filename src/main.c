@@ -5,6 +5,7 @@
 #include "bsp/bmp180.h"
 #include "bsp/mfrc522.h"
 #include "bsp/usart2.h"
+#include "bsp/dog.h"
 
 /* lcd_init() 已启用 DWT；按 CPU 周期计数，避免空循环随优化变化。 */
 static void delay_ms(uint32_t milliseconds)
@@ -123,7 +124,21 @@ void main_init_usart2(void)
     }
 }
 
+void main_dog(void){
+    uint32_t reson=ResetReason_Check();
+    dog_init();
+    while(1){
+        // 在这里执行其他任务
+        // 定期喂狗，防止系统复位
+         if (System_IsHealthy())
+        {
+            IWDG_ReloadCounter();
+        }
+        delay_ms(1000U); // 延时 1 秒
+    }
+}
+
 int main(void)
 {
-    main_init_usart2();
+    main_dog();
 }
