@@ -6,6 +6,8 @@
 #include "bsp/mfrc522.h"
 #include "bsp/usart2.h"
 #include "bsp/dog.h"
+#include "bsp/flash.h"
+#include "bsp/flash_config.h"
 
 /* lcd_init() 已启用 DWT；按 CPU 周期计数，避免空循环随优化变化。 */
 static void delay_ms(uint32_t milliseconds)
@@ -138,7 +140,29 @@ void main_dog(void){
     }
 }
 
+void main_flash(void){
+    lcd_init();
+    FlashConfig config = {
+        .magic = 0x12345678,
+        .version = 1,
+        .threshold = 100,
+        .crc = 0xABCD
+    };
+
+    Flash_WriteConfig(&config);
+
+    // 从 Flash 读取配置
+    FlashConfig read_config={};
+    Flash_ReadConfig(&read_config);
+    char text[17];
+    snprintf(text, sizeof(text), "CRC:%04X",(unsigned int)read_config.crc);
+    display_line(0, text);
+    while(1){
+        delay_ms(1000U);
+    }
+}
+
 int main(void)
 {
-    main_dog();
+    main_flash();
 }
